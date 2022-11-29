@@ -7,10 +7,12 @@ let tipoDeEnemigo = ""
 let danioBaseEnemigo = 0
 let vidaBaseEnemigo = 0
 
-
-
-function heroe() {
+function asignarHeroe(){
     tipoDeHeroe = prompt(`¿Desea crear un panda mago, guerrero o tanque?`)
+}
+
+
+function heroe(tipoDeHeroe) {
     if (tipoDeHeroe == `panda mago`) {
         vidaBaseHeroe = 225
         danioBaseHeroe = 180
@@ -26,10 +28,11 @@ function heroe() {
     }
 }
 
+function asignarEnemigo(){
+    tipoDeEnemigo = prompt(`¿Desea crear un gobling, orco o demonio`)
+}
 
-
-function enemigo() {
-    tipoDeEnemigo = prompt(`¿Desea crear un gobling, orco o demonio?`)
+function enemigo(tipoDeEnemigo) {
     if (tipoDeEnemigo == `gobling`) {
         vidaBaseEnemigo = 180
         danioBaseEnemigo = 70
@@ -91,8 +94,10 @@ function verificarGanador() {
     }
 }
 
-heroe();
-enemigo();
+asignarHeroe();
+asignarEnemigo();
+heroe(tipoDeHeroe);
+enemigo(tipoDeEnemigo);
 comienzoDeBatalla();
 verificarGanador();
 
