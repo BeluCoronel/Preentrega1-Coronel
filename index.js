@@ -1,52 +1,36 @@
-
-let tipoDeHeroe = ""
-let danioBaseHeroe = 0
-let vidaBaseHeroe = 0
-
-let tipoDeEnemigo = ""
-let danioBaseEnemigo = 0
-let vidaBaseEnemigo = 0
-
-function asignarHeroe(){
-    tipoDeHeroe = prompt(`¿Desea crear un panda mago, guerrero o tanque?`)
-}
-
-
-function heroe(tipoDeHeroe) {
-    if (tipoDeHeroe == `panda mago`) {
-        vidaBaseHeroe = 225
-        danioBaseHeroe = 180
+class character {
+    constructor ( id, nombre, tipo, vidaBase, danioBase ){
+        this.id = id;
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.vidaBase = vidaBase;
+        this.danioBase = danioBase;
     }
 
-    else if (tipoDeHeroe == `guerrero`) {
-        vidaBaseHeroe = 300
-        danioBaseHeroe = 80
+    recibirDanio(danio){
+        this.vidaBase -= danio;
     }
-    else if (tipoDeHeroe == `tanque`) {
-        vidaBaseHeroe = 450
-        danioBaseHeroe = 50
+
+    atacar(character){
+        character.recibirDanio(this.danioBase);
     }
 }
 
-function asignarEnemigo(){
-    tipoDeEnemigo = prompt(`¿Desea crear un gobling, orco o demonio`)
+function asignarHeroe() {
+    return prompt(`¿Desea crear un Mago, Guerrero o Tanque?`)
 }
 
-function enemigo(tipoDeEnemigo) {
-    if (tipoDeEnemigo == `gobling`) {
-        vidaBaseEnemigo = 180
-        danioBaseEnemigo = 70
-    }
 
-    else if (tipoDeEnemigo == `orco`) {
-        vidaBaseEnemigo = 350
-        danioBaseEnemigo = 130
-    }
-    else if (tipoDeEnemigo == `demonio`) {
-        vidaBaseEnemigo = 450
-        danioBaseEnemigo = 110
-    }
+function Heroe(tipoDeHeroe, filtrarHeroe) {
+    return filtrarHeroe(tipoDeHeroe, arrayheroes);
+}
 
+function asignarEnemigo() {
+    return prompt(`¿Desea crear un Gobling, Orco o Demonio`)
+}
+
+function Enemigo(tipoDeEnemigo, filtrarEnemigo) {
+    return filtrarEnemigo(tipoDeEnemigo, arrayenemigos);
 }
 
 
@@ -57,12 +41,12 @@ function comienzoDeBatalla() {
         console.log(`TURNO = ${i + 1}`)
         ataqueAEnemigo();
         ataqueAHeore();
-        if (vidaBaseHeroe <= 0) {
-            console.log(`El ${tipoDeHeroe} ha caído. El ganador es ${tipoDeEnemigo}`)
+        if (heroe.vidaBase <= 0) {
+            console.log(`El ${heroe.tipo} ha caído. El ganador es ${enemigo.tipo}`)
             break
         }
-        else if (vidaBaseEnemigo <= 0) {
-            console.log(`El ${tipoDeEnemigo} ha caído. El ganador es ${tipoDeHeroe}`)
+        else if (enemigo.vidaBase <= 0) {
+            console.log(`El ${enemigo.tipo} ha caído. El ganador es ${heroe.tipo}`)
             break
         }
 
@@ -71,35 +55,53 @@ function comienzoDeBatalla() {
 }
 
 function ataqueAEnemigo() {
-    vidaBaseEnemigo -= danioBaseHeroe
-    console.log(`El ${tipoDeHeroe} ha atacado al ${tipoDeEnemigo}, por ${danioBaseHeroe} de daño. Al enemigo le quedan ${vidaBaseEnemigo} puntos de vida`)
+    heroe.atacar(enemigo)
+    console.log(`El ${heroe.tipo} ha atacado al ${enemigo.tipo}, por ${heroe.danioBase} de daño. Al enemigo le quedan ${enemigo.vidaBase} puntos de vida`)
 }
 
 function ataqueAHeore() {
-    vidaBaseHeroe -= danioBaseEnemigo
-    console.log(`El ${tipoDeEnemigo} ha atacado al ${tipoDeHeroe}, por ${danioBaseEnemigo} de daño. Al heore le quedan ${vidaBaseHeroe} puntos de vida`)
+    enemigo.atacar(heroe)
+    console.log(`El ${enemigo.tipo} ha atacado al ${heroe.tipo}, por ${enemigo.danioBase} de daño. Al heore le quedan ${heroe.vidaBase} puntos de vida`)
 }
 
 
 
 function verificarGanador() {
-    if (vidaBaseHeroe > vidaBaseEnemigo) {
-        console.log(`El ganador es ${tipoDeHeroe}`)
+    if(heroe.vidaBase < 0 && enemigo.vidaBase <0 ){
+        console.log("Se mataron los dos")
     }
-    else if (vidaBaseEnemigo > vidaBaseHeroe) {
-        console.log(`El ganador es ${tipoDeEnemigo}`)
+    else if (heroe.vidaBase > enemigo.vidaBase) {
+        console.log(`El ganador es ${heroe.tipo}`)
     }
-    else if (vidaBaseEnemigo == vidaBaseHeroe) {
-        console.log(`El ${tipoDeHeroe} y ${tipoDeEnemigo} han empatado`)
+    else if (heroe.vidaBase < enemigo.vidaBase) {
+        console.log(`El ganador es ${enemigo.tipo}`)
+    }
+    else if (heroe.vidaBase == enemigo.vidaBase) {
+        console.log(`El ${heroe.tipo} y ${enemigo.tipo} han empatado`)
     }
 }
 
-asignarHeroe();
-asignarEnemigo();
-heroe(tipoDeHeroe);
-enemigo(tipoDeEnemigo);
+
+
+const arrayheroes = [
+    new character("01","Mandy","Mago", 225, 180),
+    new character("02","Amber","Guerrero", 300, 80),
+    new character("03","Buster","Tanque", 450, 50)
+]
+
+const arrayenemigos = [
+    new character("001","Gale","Gobling", 180, 70),
+    new character("002","Frank","Orco", 350, 130),
+    new character("003","Janet","Demonio", 450, 110)
+]
+
+function filtrarCharacter(tipo, array){
+    return array.filter(element => element.tipo == tipo)[0]
+}
+
+const tipoDeHeroe = asignarHeroe();
+const tipoDeEnemigo = asignarEnemigo();
+const heroe = Heroe(tipoDeHeroe,filtrarCharacter);
+const enemigo = Enemigo(tipoDeEnemigo,filtrarCharacter);
 comienzoDeBatalla();
 verificarGanador();
-
-
-
